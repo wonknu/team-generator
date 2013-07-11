@@ -1,0 +1,15 @@
+<article>
+    <h3 class="subheader">{{title}}</h3>
+    <div class="large-12 columns">
+        <a href="#" class="button prefix" data-event="next" data-event="next" >{{btn}}</a>
+        <kbd>Duration generation : {{duration}} sec</kbd>
+        {{#teams}}
+        <ul class="pricing-table">
+                <li class="price">{{teamName}}</li>
+                {{#players}}
+                    <li class="description">{{.}}</li>
+                {{/players}}
+        </ul>
+        {{/teams}}
+    </div>
+</article>
