@@ -3,7 +3,8 @@ var STATIC = STATIC || {},
 
 STATIC.url = {};
 
-STATIC.url.base = 'chrome-extension://khnjpdoglepnkkacfoplmppkbbokemgk/'
+//STATIC.url.base = 'chrome-extension://khnjpdoglepnkkacfoplmppkbbokemgk/' // ADFAB
+STATIC.url.base = 'chrome-extension://fclfncgebknppkdoinfjgegegfcjiphm/' // HOME
 STATIC.url.templates = STATIC.url.base + 'templates/';
 
 STATIC.pages = [
