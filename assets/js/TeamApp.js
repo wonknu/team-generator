@@ -96,8 +96,9 @@ var TeamApp = TeamApp || (function ($)
 			    }
 	        });
         },
-        shuffle : function (array) {
-            var i, j, temp;
+        shuffle : function (arr)
+        {
+            var i, j, temp, array = arr.slice();
             for (i = array.length - 1; i > 0; i--) {
                 j = Math.floor(Math.random() * (i + 1));
                 temp = array[i];
@@ -117,20 +118,14 @@ var TeamApp = TeamApp || (function ($)
             
             DYNAMIC.Storage.randomPlayers = Utils.shuffle(DYNAMIC.Storage.players);
             
-            for (i = 0; i < teamsLength; i++) { // loop sur nombre de teams
-                teams[DYNAMIC.Storage.teamsNames[i]] = []; // creer un tableau pour mettre joueur d'une team
-                letGo = false;
-                while(teams[DYNAMIC.Storage.teamsNames[i]].length < playersLength && !letGo){ // loop tant que player d'une team est inférieur au nombre souhaité
-                    rand = parseInt(Math.random() * DYNAMIC.Storage.players.length); // choisie un joueur au hasard
-                    if(flag.indexOf(rand) < 0){ // si le joueur au hasar a pas été flagé
-                        if(typeof DYNAMIC.Storage.players[rand] === "undefined" || DYNAMIC.Storage.players[rand] === null) letGo = true;
-                        else{
-                            flag.push(rand); // push le flag
-                            teams[DYNAMIC.Storage.teamsNames[i]].push(DYNAMIC.Storage.players[rand]); // push le joueur
-                        }
-                    }
-                }
-            };
+            for (i = 0; i < teamsLength; i++){
+                teams[DYNAMIC.Storage.teamsNames[i]] = DYNAMIC.Storage.randomPlayers.splice(0, playersLength);
+            }
+            
+            while(DYNAMIC.Storage.randomPlayers.length > 0){
+                if(i == teamsLength) i = 0;
+                teams[DYNAMIC.Storage.teamsNames[i]].push(DYNAMIC.Storage.randomPlayers.splice(0, 1));
+            }
             
             STATIC.pagesContent[3].duration = new Date().getTime() - start;
             STATIC.pagesContent[3].teams = [];
@@ -141,6 +136,15 @@ var TeamApp = TeamApp || (function ($)
                     players : teams[key]
                 });
             }
+        },
+        error : function ($el)
+        {
+            $el.addClass('error');
+            var t = setTimeout(function ()
+            {
+                $el.removeClass('error');
+                clearTimeout(t);
+            }, 500);
         }
     };
     var _log = Utils.log;
@@ -206,6 +210,11 @@ var TeamApp = TeamApp || (function ($)
                 if(currentRoute < 3) currentRoute++;
                 Routes.nextRoute();
             },
+            restart : function ()
+            {
+                currentRoute = 0;
+                Routes.nextRoute();
+            },
             addPlayer : function ()
             {
                 var newName = $('.new-player input').val();
@@ -215,20 +224,25 @@ var TeamApp = TeamApp || (function ($)
                     $('.new-player input').val("");
                 }
                 else if(DYNAMIC.Storage.players.indexOf(newName) >= 0) {
-                    var inputError = $('form .row:nth-child(' + (DYNAMIC.Storage.players.indexOf(newName) + 1) + ') input');
-                    inputError.addClass('error');
-                    var t = setTimeout(function ()
-                    {
-                        inputError.removeClass('error');
-                        clearTimeout(t);
-                    }, 500);
+                    Utils.error($('form .row:nth-child(' + (DYNAMIC.Storage.players.indexOf(newName) + 1) + ') input'));
                 }
                 $('.new-player input').focus();
+            },
+            teamName : function ()
+            {
+                notNullInputs = true;
+                $.each($('input[type=text]'), function(i, o)
+                {
+                    if($(o).val() == "") {
+                        Utils.error($(o));
+                        notNullInputs = false;
+                    }
+                });
+                if(notNullInputs) Events.endpoints.next();
             }
         },
         bindEvents: function ()
         {
-            
             $('[data-event]').each(function ()
             {
         		var _this = this,
@@ -253,7 +267,6 @@ var TeamApp = TeamApp || (function ($)
 			        });
 		        }
         	});
-            
         },
         init: function ()
         {

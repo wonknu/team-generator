@@ -21,6 +21,7 @@ h1, h3{
 .row.footer{
     position: absolute;
     bottom:0;
+    max-width: 100%;
 }
 
 .meter{
