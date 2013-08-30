@@ -39,12 +39,12 @@ STATIC.container = {
 };
 
 STATIC.templates = {
-    playerInserted : '<div class="row collapse">' +
+    playerInserted : '<div class="row collapse player-name-added" data-index="{{index}}">' +
                         '<div class="small-11 columns">' +
-                            '<input type="text" placeholder="player name" value="{{name}}">' +
+                            '<input type="text" placeholder="player name" value="{{name}}" disabled>' +
                         '</div>' +
                         '<div class="small-1 columns">' +
-                            '<a href="#" class="button magenta prefix">X</a>' +
+                            '<a href="#" class="button magenta prefix delete-player">X</a>' +
                         '</div>' +
                     '</div>'
 };

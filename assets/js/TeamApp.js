@@ -180,13 +180,27 @@ var TeamApp = TeamApp || (function ($)
                     case 0 : 
                         DYNAMIC.Storage.teams = parseInt($('.teams-number').val());
                         if(DYNAMIC.Storage.teams < 2 || isNaN(DYNAMIC.Storage.teams)) {
-                            STATIC.pagesContent[1].count = DYNAMIC.Storage.teams = [{nb : 1, focus : ' autofocus="autofocus" '}, {nb : 1, focus : ''}];
+                            STATIC.pagesContent[1].count = DYNAMIC.Storage.teams = [
+                            	{
+	                            	nb : 1,
+	                        		focus : ' autofocus="autofocus" '
+                        		},
+                        		{
+                        			nb : 1,
+                        			focus : ''
+                            	}
+                            ];
                         }
                         else{
                             STATIC.pagesContent[1].count = [];
                             for (var i = 1; i <= DYNAMIC.Storage.teams; i++) {
-                                if(i === 1) STATIC.pagesContent[1].count.push({nb : i, focus : ' autofocus="autofocus" '});
-                                else STATIC.pagesContent[1].count.push({nb : i, focus : ''});
+                                if(i === 1)
+                                	STATIC.pagesContent[1].count.push({
+                                		nb : i,
+                                		focus : ' autofocus="autofocus" '
+                                	});
+                                else
+                                	STATIC.pagesContent[1].count.push({nb : i, focus : ''});
                             };
                         }
                     break;
@@ -220,13 +234,31 @@ var TeamApp = TeamApp || (function ($)
                 var newName = $('.new-player input').val();
                 if(newName !== "" && DYNAMIC.Storage.players.indexOf(newName) < 0){
                     DYNAMIC.Storage.players.push(newName);
-                    $('.add-wrapper').before(Mustache.to_html(STATIC.templates.playerInserted, { name : newName }));
+                    $('.add-wrapper').before(
+                    	Mustache.to_html(
+	                    	STATIC.templates.playerInserted,
+	                    	{
+	                    		name : newName,
+	                    		index : (DYNAMIC.Storage.players.length - 1)
+	                    	}
+                    	)
+                    );
                     $('.new-player input').val("");
                 }
                 else if(DYNAMIC.Storage.players.indexOf(newName) >= 0) {
-                    Utils.error($('form .row:nth-child(' + (DYNAMIC.Storage.players.indexOf(newName) + 1) + ') input'));
+                    Utils.error(
+                    	$('form .row:nth-child(' + (DYNAMIC.Storage.players.indexOf(newName) + 1) + ') input')
+                    );
                 }
                 $('.new-player input').focus();
+                $('.delete-player') // reset event delete player
+                .off('click')
+                .on('click', function (e)
+                {
+                	var $toDelete = $(this).parents('.player-name-added');
+                	DYNAMIC.Storage.players.splice(parseInt($toDelete.attr('data-index')), 1);
+                	$toDelete.remove();
+                });
             },
             teamName : function ()
             {
