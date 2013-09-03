@@ -26,7 +26,8 @@ var TeamApp = TeamApp || (function ($)
         },
         cache: {
             window: window,
-            document: document
+            document: document,
+            popTemplate:null
         },
         home_url: function (path)
         {
@@ -145,6 +146,40 @@ var TeamApp = TeamApp || (function ($)
                 $el.removeClass('error');
                 clearTimeout(t);
             }, 500);
+        },
+        pop : function (content)
+        {
+            var $popContainer = $('<div class="pop"></div>');
+            function on ()
+            {
+                $('body').append($popContainer);
+                $popContainer.html(Mustache.to_html(Utils.cache.popTemplate, content));
+                Events.bindEvents();
+                var t = setTimeout(function ()
+                {
+                    $popContainer.addClass('on');
+                    clearTimeout(t);
+                }, 0);
+            }
+            if(Utils.cache.popTemplate === null)
+                Ajax.call(STATIC.url.templates + "pop.html", {}, function (result)
+                {
+                    Utils.cache.popTemplate = result;
+                    on();
+                }, 'html');
+            else on();
+        },
+        popRemove : function ()
+        {
+            var $pop = $('.pop');
+            if($pop.size() > 0){
+                $pop.removeClass('on').addClass('off');
+                var t = setTimeout(function ()
+                {
+                    $pop.remove();
+                    clearTimeout(t);
+                }, 500);
+            }
         }
     };
     var _log = Utils.log;
@@ -271,6 +306,27 @@ var TeamApp = TeamApp || (function ($)
                     }
                 });
                 if(notNullInputs) Events.endpoints.next();
+            },
+            pop : {
+                load : function (page)
+                {
+                    Ajax.call(STATIC.url.templates + page + ".html", {}, function (result)
+                    {
+                        Utils.pop({content : result});
+                    }, 'html');
+                },
+                back : function ()
+                {
+                    Utils.popRemove();
+                },
+                help : function ()
+                {
+                    Events.endpoints.pop.load('help');
+                },
+                credits : function ()
+                {
+                    Events.endpoints.pop.load('credits');
+                }
             }
         },
         bindEvents: function ()

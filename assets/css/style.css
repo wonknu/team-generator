@@ -46,3 +46,28 @@ kbd {
     display: block;
     text-align: center;
 }
+
+/* POP */
+.pop{
+    position: absolute;
+    top:100%;
+    left:0;
+    background-color: #fff;
+    height: 100%;
+    width: 100%;
+    z-index: 500;
+    
+    -webkit-transition: all 0.5s ease-out;
+    transition: all 0.5s ease-out;
+}
+.pop.on{
+    top:0;
+}
+.pop.off{
+    top:100%;
+}
+
+/* credits */
+.credits ul{
+    list-style-position: inside;
+}
