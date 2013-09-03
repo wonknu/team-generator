@@ -1,7 +1,7 @@
 {
     "name": "demo test chrome app",
     "description": "A simple test application.",
-    "version": "0.1",
+    "version": "0.2",
     "manifest_version": 2,
     "app": {
         "background": {
